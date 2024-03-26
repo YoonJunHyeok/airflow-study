@@ -85,7 +85,7 @@ docker build -t airflow-basic .
 
 docker run --rm -d -p 8080:8080 airflow-basic
 
-Quick Tour of Airflow CLI
+==================== Quick Tour of Airflow CLI ======================
 
 
 docker ps
@@ -94,6 +94,10 @@ docker ps
 
 docker exec -it container_id /bin/bash
 * Execute the command /bin/bash in the container_id to get a shell session
+* In order to open a bash session inside the Docker container of airflow.
+
+docker stop <container_id>
+* Stop your Airflow docker container
 
 
 pwd
@@ -101,7 +105,8 @@ pwd
 
 
 airflow db init
-* Initialise the metadatabase
+* Initialise the metadatabase and generate files and folders needed by airflow
+* This is the first command that you will execute as soon as you install airflow for the first time.
 
 
 airflow db reset
@@ -109,7 +114,7 @@ airflow db reset
 
 
 airflow db upgrade
-* Upgrade the metadatabase (Latest schemas, values, ...)
+* Upgrade the metadatabase (Latest schemas, values, ...) also airlfow version ..?
 
 
 airflow webserver
@@ -146,6 +151,10 @@ airflow dags trigger example_python_operator -e '2021-01-01 19:04:00+00:00'
 
 airflow dags list-runs -d example_python_operator
 * Display the history of example_python_operator’s dag runs
+
+
+airflow dags backfill -s 2024-01-01 -e 2024-01-05 --reset-dagruns
+* startdate, enddate. --reset-dagruns로 DAG의 모든 실행 상태 초기화
 
 
 airflow tasks list example_python_operator
