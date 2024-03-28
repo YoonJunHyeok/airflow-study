@@ -51,3 +51,5 @@ run bash session in airflow container
 ```bash
 airflow tasks test ${dag_id} ${task_id} ${execution_date}
 ```
+
+http://localhost:32762/ 으로 hue 접속
