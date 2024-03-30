@@ -89,3 +89,13 @@ http://localhost:32762/ 으로 hue 접속
 - Conn id: slack_conn
 - Conn type: HTTP
 - Password: {webhook URL from slack API}
+
+### For Full Clean Up
+
+1. Delete forex_rates.json at opt(mnt)/airflow/dags/files
+2. Drop table forex_rates from HIVE by HUE
+3. Run Following command to delete internal storage to prevent duplicates
+
+```bash
+hdfs dfs -rm -r -f /user/hive/warehouse/forex_rates
+```
