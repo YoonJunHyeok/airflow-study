@@ -15,13 +15,13 @@ services:
         max-size: "10m"
     ports:
       - "32769:5432"
-    #volumes:
-    #- ./mnt/postgres:/var/lib/postgresql/data/pgdata
+    volumes:
+      - ./mnt/postgres:/var/lib/postgresql/data/pgdata
     environment:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
       - POSTGRES_DB=airflow_db
-      #- PGDATA=/var/lib/postgresql/data/pgdata
+      - PGDATA=/var/lib/postgresql/data/pgdata
     healthcheck:
       test: ["CMD", "pg_isready", "-q", "-d", "airflow_db", "-U", "airflow"]
       timeout: 45s
