@@ -60,7 +60,7 @@ http://localhost:32762/ 으로 hue 접속
 
 - Conn id: forex_api
 - Conn type: HTTP
-- Port: https://gist.github.com/
+- Host: https://gist.github.com/
 
 2. forex_path
 
@@ -88,7 +88,8 @@ http://localhost:32762/ 으로 hue 접속
 
 - Conn id: slack_conn
 - Conn type: HTTP
-- Password: {webhook URL from slack API}
+- Host: https://hooks.slack.com/services/
+- Password: {rest of webhook URL from slack API}
 
 ### For Full Clean Up
 
