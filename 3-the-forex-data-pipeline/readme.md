@@ -53,3 +53,39 @@ airflow tasks test ${dag_id} ${task_id} ${execution_date}
 ```
 
 http://localhost:32762/ 으로 hue 접속
+
+### Airflow Admin Connection 추가
+
+1. forex_api
+
+- Conn id: forex_api
+- Conn type: HTTP
+- Port: https://gist.github.com/
+
+2. forex_path
+
+- Conn id: forex path
+- Conn type: File(path)
+- Extra: {"path": "/opt/airflow/dags/files"}
+
+3. hive_conn
+
+- Conn id: hive_conn
+- Conn type: hive server 2 thrift
+- Host: hive-server
+- Login: hive
+- Password: hive
+- Port: 10000
+
+4. spark_conn
+
+- Conn id: spark_conn
+- Conn type: Spark
+- Host: spark://spark-master
+- Port: 7077
+
+5. slack_conn
+
+- Conn id: slack_conn
+- Conn type: HTTP
+- Password: {webhook URL from slack API}

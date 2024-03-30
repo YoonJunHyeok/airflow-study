@@ -1,9 +1,13 @@
 from airflow import DAG
 from airflow.decorators import task
-from airflow.providers.http.sensors.http import HttpSensor
-from airflow.sensors.filesystem import FileSensor
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
+from airflow.operators.email import EmailOperator
+from airflow.sensors.filesystem import FileSensor
+from airflow.providers.http.sensors.http import HttpSensor
+from airflow.providers.apache.hive.operators.hive import HiveOperator
+from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
+from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
 
 from datetime import datetime, timedelta
 
@@ -43,6 +47,9 @@ def download_rates():
             with open('/opt/airflow/dags/files/forex_rates.json', 'a') as outfile:
                 json.dump(outdata, outfile)
                 outfile.write('\n')
+
+def _get_message() -> str:
+    return "Hi from forex_data_pipeline"
 
 with DAG(
     "forex_data_pipeline", 
@@ -86,3 +93,57 @@ with DAG(
             hdfs dfs -put -f $AIRFLOW_HOME/dags/files/forex_rates.json /forex
         """
     )
+
+    # create a Hive table to store forex rates from the HDFS
+    # hql is hibernate query language.
+    creat_forex_rates_table = HiveOperator(
+        task_id="creat_forex_rates_table",
+        hive_cli_conn_id="hive_conn",
+        hql="""
+            CREATE EXTERNAL TABLE IF NOT EXISTS forex_rates(
+                base STRING,
+                last_update DATE,
+                eur DOUBLE,
+                usd DOUBLE,
+                nzd DOUBLE,
+                gbp DOUBLE,
+                jpy DOUBLE,
+                cad DOUBLE
+                )
+            ROW FORMAT DELIMITED
+            FIELDS TERMINATED BY ','
+            STORED AS TEXTFILE
+        """
+    )
+
+    # Process forex rates with Spark
+    # Airflow로 대용량 데이터 작업을 하지 않는다. 대신 그 작업을 하는 Spark를 Trigger한다.
+    # Airflow는 Processing framework가 아니라, Orchestrator이다.
+    # application은 실행할 path of script이다.
+    process_forex_rates = SparkSubmitOperator(
+        task_id="process_forex_rates",
+        conn_id="spark_conn",
+        application="/opt/airflow/dags/scripts/forex_processing.py",
+        verbose=False
+    )
+
+    # Send an Email Notification
+    send_email_notification = EmailOperator(
+        task_id="send_email_notification",
+        to="junhy1607@naver.com",
+        subject="forex_data_pipeline",
+        html_content="<h3>forex_data_pipeline</h3>"
+    )
+
+    # Send a Slack Notification
+    send_slack_notification = SlackWebhookOperator(
+        task_id="send_slack_notification",
+        http_conn_id="slack_conn",
+        message=_get_message(),
+        channel="#monitoring"
+    )
+
+    # Add dependencies between Tasks
+    is_forex_rates_available >> is_forex_currencies_file_available >> download_rates >> save_rates 
+    save_rates >> creat_forex_rates_table >> process_forex_rates 
+    process_forex_rates >> [send_email_notification, send_slack_notification]
