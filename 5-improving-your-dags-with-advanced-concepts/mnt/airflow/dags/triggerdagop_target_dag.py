@@ -11,7 +11,10 @@ default_args = {
 def remote_value(**context):
     print("Value {} for key=message received from the controller DAG".format(context["dag_run"].conf["message"]))
 
-with DAG(dag_id="triggerdagop_target_dag", default_args=default_args, schedule_interval=None) as dag:
+with DAG(dag_id="triggerdagop_target_dag", 
+         default_args=default_args, 
+         schedule_interval=None
+) as dag:
 
     t1 = PythonOperator(
             task_id="t1",

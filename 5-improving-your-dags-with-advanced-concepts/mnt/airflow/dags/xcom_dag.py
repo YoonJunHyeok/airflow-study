@@ -13,6 +13,7 @@ def push_xcom_with_return():
     # key가 "return_value"가 된다.
     return 'my_returned_xcom'
 
+# Operator에서 xcom을 가져오려면 provide_context=True를 설정해야 한다.
 def get_pushed_xcom_with_return(**context):
     print(context['ti'].xcom_pull(task_ids='t0')) 
 

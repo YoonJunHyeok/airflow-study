@@ -10,7 +10,10 @@ default_args = {
         "start_date": airflow.utils.dates.days_ago(1)
     }
 
-with DAG(dag_id="externaltasksensor_dag", default_args=default_args, schedule_interval="@daily") as dag:
+with DAG(dag_id="externaltasksensor_dag", 
+         default_args=default_args, 
+         schedule_interval="@daily"
+) as dag:
     sensor = ExternalTaskSensor(
         task_id='sensor',
         external_dag_id='sleep_dag',

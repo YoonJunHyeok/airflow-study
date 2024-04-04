@@ -22,6 +22,7 @@ def generate_random_dates(start, end, n):
         dates[i] = start + datetime.timedelta(seconds=randint(0, int((end - start).total_seconds())))
     return(dates)
 
+# 대략 100mb 크기의 데이터 생성해서 push
 def push_xcom_with_return():
     # Generate a sample dataframe
     n = 1000000

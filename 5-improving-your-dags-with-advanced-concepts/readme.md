@@ -88,10 +88,39 @@ docker-compose -f docker-compose-CeleryExecutor.yml down
 ### 불러오는 방법
 
 - xcom_pull
+
   1. xcom_pull(key=ret)
   2. xcom_pull(key=None, task_ids["Task1"])
+
   - list로 넘겨서 여러 task들의 return value 부를 수 있다.
   - 그러기 위해서는 key가 None으로 설정되어 있어야 한다.
+
+- XCOM 값들을 자동으로 삭제해주지 않아서, 용량 부족이 일어나지 않도록 잘 관리해야 한다.
+
+### XCOM with Large Value
+
+- 가능은 하지만 권장되지 않는다.
+- Spark와 같은 데이터 프로세싱 프레임워크를 사용해라.
+
+## TriggerDagRunOperator
+
+- Start a DAG from another DAG base on conditions
+- Controller DAG에서 target DAG를 실행.
+- Controller does not wait for target to finish
+- Controller and target are independent
+- Target의 trigger가 on이어야 한다.
+- No visualisation from the controller neither history
+- Both DAGs must be scheduled
+- Target DAG schedule interval = None 권장
+
+## Dependencies between DAGs with the ExternalTaskSensor
+
+- Allows to wait for an external task (in another dag) to complete
+- Should keep the same schedule_interval between DAGs
+- Or use execution_delta **or** executio_date_fn parameters
+- Using both ExternalTaskSensor and TriggerDagRunOperator usually lead to get the sensor stuck
+- Mode "poke" used by default
+  - "reschedule" if needed
 
 ## Troubleshooting of this section
 
