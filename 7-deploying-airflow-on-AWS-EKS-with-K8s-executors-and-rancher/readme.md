@@ -149,3 +149,17 @@ Flask-OpenID==1.3.0
 ## How to access applications from the outside
 
 - service, load balancer, ingress(어렵지만 이 방법이 recommended)
+
+## 부록
+
+### Rancher의 admin 계정의 비밀번호를 까먹었을 때
+
+1. 비밀번호 reset
+
+ec2 인스턴스 cli에서
+
+```bash
+docker exec -ti <container-id> reset-password
+```
+
+2. rancer ui에서 change password
