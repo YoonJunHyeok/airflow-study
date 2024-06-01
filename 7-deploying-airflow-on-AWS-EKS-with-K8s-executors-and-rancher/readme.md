@@ -4,7 +4,9 @@
 
 2. 애플리케이션 및 OS 이미지로 `Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type(64비트 x86)`을 선택한다.
 
-3. Rancer가 2GB의 메모리를 필요로 하기에 인스턴스 유형으로 `t2.small`을 선택한다.
+3. Rancher가 2GB의 메모리를 필요로 하기에 인스턴스 유형으로 `t2.small`을 선택한다.
+
+- 3.1 최신 버전의 Rancher가 높은 성능을 요구하기에 `t2.medium`을 선택해야 한다.
 
 4. 새 키 페어를 적절한 이름으로 생성하고, 저장된 키를 안전한 곳에 보관한다.
 
@@ -149,6 +151,31 @@ Flask-OpenID==1.3.0
 ## How to access applications from the outside
 
 - service, load balancer, ingress(어렵지만 이 방법이 recommended)
+
+## Deploy Nginx Ingress with Catalogs(Helm)
+
+- Rancher의 Catalog는 Set of Helm Charts이다.
+
+1. Rancher에서 해당 클러스터에서 Apps를 클릭한다.
+2. Repository에서 bitnami나 helm-stable을 추가한다.
+
+- helm-stable은 추가해도 chart들이 안 뜬다.
+
+3. nginx ingress controller를 검색해서 install 한다.
+
+## Deploy and run Airflow with Kubernetes Executor in EKS
+
+1. https://github.com/marclamberti/airflow-helm-chart - master 를 Repository에 추가한다.
+2. Apps에서 airflow-k8s를 설치한다.
+3. 옛날 강의라 deprecated된 k8s resource를 사용하여 설치가 되지 않는다. => 나중에 직접 해보자
+
+## Clean up AWS
+
+1. Rancher에서 클러스터 삭제
+2. EKS 확인
+3. CloudFormation 확인
+4. EC2의 instance, load balancer 삭제
+5. VPC 삭제
 
 ## 부록
 
